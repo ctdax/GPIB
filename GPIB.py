@@ -258,9 +258,9 @@ class GPIBController:
 
 
 # Example usage functions
-def example_basic_usage():
+def test_connection():
     """
-    Example of basic GPIB usage.
+    Test GPIB connection and basic commands.
     """
     # Initialize GPIB controller
     gpib = GPIBController()
@@ -269,72 +269,21 @@ def example_basic_usage():
     resources = gpib.list_resources()
     print(f"Available instruments: {resources}")
     
-    # Connect to an instrument (replace with actual GPIB address)
     if resources:
         instrument_address = resources[0]  # Use first available instrument
         if gpib.connect_instrument(instrument_address, "my_instrument"):
-            
-            # Get instrument identification
-            idn = gpib.get_identification("my_instrument")
-            print(f"Instrument ID: {idn}")
-            
-            # Send some commands (examples for a typical multimeter)
-            gpib.send_command("my_instrument", "CONF:VOLT:DC")  # Configure DC voltage measurement
-            gpib.send_command("my_instrument", "SAMP:COUN 1")   # Set sample count
-            
-            # Read a measurement
-            measurement = gpib.query_command("my_instrument", "READ?")
-            print(f"Measurement: {measurement}")
-            
-            # Clean up
             gpib.disconnect_instrument("my_instrument")
     
     # Close all connections
     gpib.close_all_connections()
 
 
-def example_multimeter_measurement():
-    """
-    Example of using GPIB with a digital multimeter.
-    """
-    gpib = GPIBController()
-    
-    # Connect to multimeter at GPIB address 22
-    if gpib.connect_instrument("GPIB0::22::INSTR", "dmm"):
-        
-        # Reset and clear instrument
-        gpib.reset_instrument("dmm")
-        gpib.clear_instrument("dmm")
-        
-        # Configure for DC voltage measurement
-        gpib.send_command("dmm", "CONF:VOLT:DC 10,0.001")  # 10V range, 1mV resolution
-        
-        # Take multiple measurements
-        measurements = []
-        for i in range(5):
-            value = gpib.query_command("dmm", "READ?")
-            if value:
-                measurements.append(float(value))
-                print(f"Measurement {i+1}: {value} V")
-            time.sleep(0.5)
-        
-        # Calculate average
-        if measurements:
-            avg = sum(measurements) / len(measurements)
-            print(f"Average voltage: {avg:.4f} V")
-        
-        gpib.disconnect_instrument("dmm")
-    
-    gpib.close_all_connections()
-
-
 if __name__ == "__main__":
-    # Run example
-    print("GPIB Communication Example")
+    print("GPIB Communication Test")
     print("=" * 30)
     
     try:
-        example_basic_usage()
+        test_connection()
     except Exception as e:
         print(f"Error in example: {e}")
         print("\nNote: Make sure you have:")
