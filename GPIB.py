@@ -260,33 +260,25 @@ class GPIBController:
 # Example usage functions
 def test_connection():
     """
-    Test GPIB connection and basic commands.
+    Test GPIB connection.
     """
     # Initialize GPIB controller
     gpib = GPIBController()
     
     # List available resources
     resources = gpib.list_resources()
-    print(f"Available instruments: {resources}")
     
-    if resources:
-        instrument_address = resources[0]  # Use first available instrument
+    if len(resources) > 2:
+        instrument_address = resources[2]  # Use first available instrument that is not the default pyVISA resource
         if gpib.connect_instrument(instrument_address, "my_instrument"):
             gpib.disconnect_instrument("my_instrument")
-    
-    # Close all connections
-    gpib.close_all_connections()
+        else:
+            logger.error(f"Failed to connect to instrument at {instrument_address}")
+    else:
+        logger.error("No GPIB instruments found")
 
 
 if __name__ == "__main__":
     print("GPIB Communication Test")
     print("=" * 30)
-    
-    try:
-        test_connection()
-    except Exception as e:
-        print(f"Error in example: {e}")
-        print("\nNote: Make sure you have:")
-        print("1. PyVISA installed: pip install pyvisa")
-        print("2. VISA runtime installed (NI-VISA or compatible)")
-        print("3. GPIB instruments connected and powered on")
+    test_connection()
