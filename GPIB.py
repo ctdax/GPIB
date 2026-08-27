@@ -52,7 +52,7 @@ class GPIBController:
             List of available resource names
         """
         try:
-            resources = self.rm.list_resources()
+            resources = self.rm.list_resources('?*')
             logger.info(f"Available resources: {resources}")
             return list(resources)
         except Exception as e:
